@@ -12,7 +12,7 @@ def data_padding(data):
 
 def encode_data(input_string):
     data = data_padding(input_string)
-    # print(data)
+    print(data)
     cipher = np.dot(CIPHER_MATRIX,data)
     # print(cipher)
     crc = generate_crc(input_string)
@@ -22,28 +22,42 @@ def encode_data(input_string):
 
 
 def main():
-    input_string = input()
-    if input_string.isupper():
-        1
-    else:
-        print('Enter String in UPPERCASE')  
-        sys.exit(0)  
     serv = socket.socket()
     try:
         serv.connect(("localhost",port))
     except:
         print('Server Dowm')  
-        sys.exit(0)      
-    crc,cipher = encode_data(input_string)   
+        sys.exit(0)
+    while 1:    
+        input_string = input()
+        if input_string.isupper():
+            1
+        else:
+            print('Enter String in UPPERCASE')  
+            sys.exit(0)  
+        i=1
+        while i:        
+            crc,cipher = encode_data(input_string)   
 
-    serv.send(cipher)
-    t = serv.recv(2).decode()
-    print('Cipher sent to server: ',t)
+            serv.send(cipher)
+            t = serv.recv(2).decode()
+            print('Cipher sent to server: ',t)
 
-    serv.send(crc) 
-    t = serv.recv(2).decode()
-    print('CRC sent to server: ',t)
-    
+            serv.send(crc) 
+            t = serv.recv(2).decode()
+            print('CRC sent to server: ',t)
+            t = serv.recv(2).decode()
+            if t == 'ok':
+                print('String sent Successfully')
+                i=0
+            if t == '':
+                print('ERROR sending string')
+                print('Want to send again? Y/N')
+                q = input()
+                if q == 'N':
+                    i=0
+
+        
     serv.close
 
 if __name__ == "__main__":

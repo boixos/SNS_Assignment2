@@ -3,7 +3,7 @@ import sys
 import socket
 import pickle
 import numpy as np
-port = 5001
+port = 5004
 key = '1001'.lstrip('0')
 l_key = len(key)
 
@@ -58,10 +58,12 @@ def stringToBinary(data):
 
 def generate_crc(data):
     binary_data = stringToBinary(data)
+    # print(binary_data)
 
     # Appends n-1 zeroes at end of data
     binary_data = binary_data + '0'*(l_key-1)
     remainder = mod2div(binary_data, key)
+    # print(remainder)
     binary_data = binary_data + remainder
     # print(binary_data)
     return binary_data
