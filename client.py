@@ -10,7 +10,7 @@ def data_padding(data):
     data = np.reshape(data, (3, len(data)//3), 'F')
     return data
 
-def encode_data(input_string):
+def EncData(input_string):
     data = data_padding(input_string)
     print(data)
     cipher = np.dot(CIPHER_MATRIX,data)
@@ -37,7 +37,7 @@ def main():
             sys.exit(0)  
         i=1
         while i:        
-            crc,cipher = encode_data(input_string)   
+            crc,cipher = EncData(input_string)   
 
             serv.send(cipher)
             t = serv.recv(2).decode()
@@ -48,7 +48,7 @@ def main():
             print('CRC sent to server: ',t)
             t = serv.recv(2).decode()
             if t == 'ok':
-                print('String sent Successfully')
+                print('String sent Successfully','\n')
                 i=0
             if t == '':
                 print('ERROR sending string')

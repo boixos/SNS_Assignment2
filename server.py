@@ -1,6 +1,6 @@
 from package import *
 from _thread import *
-import threading
+import threading,subprocess
 
 buffer = 8192
 sync = 'ok'.encode('utf-8')
@@ -8,14 +8,14 @@ sync = 'ok'.encode('utf-8')
 def verify(crc,recv_crc,recv_string,cli,addr):
     print('String Received',recv_string)
     if crc == recv_crc:
-        print('CRC verified, Correct String is Recevied from SENDER:',addr)
+        print('CRC verified, Correct String is Recevied from SENDER:',addr, '\n')
         cli.send(sync)
     else:
         print('CRC verification Failed, ERROR in recevied String')
            
 
 
-def decode_data(cipher):
+def DecData(cipher):
     data = np.dot(CIPHER_MATRIX_INV, cipher)
     # print(data)
     data = np.reshape(data,(data.shape[0]*data.shape[1]),'F')
@@ -41,7 +41,7 @@ def threaded(cli,addr):
 
         cipher, recv_crc = pickle.loads(cipher), pickle.loads(crc)
         # print(mod2div(recv_crc, key))
-        crc, recv_string = decode_data(cipher)
+        crc, recv_string = DecData(cipher)
         # print(crc, recv_string)
         verify(crc, recv_crc, recv_string,cli,addr)
 
@@ -56,26 +56,15 @@ def main():
     try:
         serv.bind(('',port))
     except:
-        # port += 1
-        serv.bind(('',port))    
+        print('Binding Failed, Try d/f port')
     serv.listen(5)
     # while 1:
         # cli,addr = serv.accept()
     start_new_thread(handl, (serv,))
-        # cipher = cli.recv(buffer)
-        # cli.send(sync)
-        # crc = cli.recv(buffer)
-        # cli.send(sync)
-        # cipher += b'.'
 
-        # cipher, recv_crc = pickle.loads(cipher),pickle.loads(crc)
-        # print(mod2div(recv_crc,key))
-        # crc,recv_string = decode_data(cipher)
-        # print(crc,recv_string)
-        # verify(crc,recv_crc,recv_string)
     print('HIT ENTER To close SERVER')    
     input()
-    
+    print('Closing SERVER...')
     serv.close()
 
 

@@ -3,7 +3,7 @@ import sys
 import socket
 import pickle
 import numpy as np
-port = 5004
+port = 5002
 key = '1001'.lstrip('0')
 l_key = len(key)
 
